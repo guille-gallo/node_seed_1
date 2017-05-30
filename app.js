@@ -48,13 +48,13 @@ const app = express();
 /**
  * Connect to MongoDB.
  */
-mongoose.Promise = global.Promise;
+/*mongoose.Promise = global.Promise;
 mongoose.connect(process.env.MONGODB_URI || process.env.MONGOLAB_URI);
 mongoose.connection.on('error', (err) => {
   console.error(err);
   console.log('%s MongoDB connection error. Please make sure MongoDB is running.', chalk.red('✗'));
   process.exit();
-});
+});*/
 
 /**
  * Express configuration.
@@ -72,7 +72,7 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(expressValidator());
-app.use(session({
+/*app.use(session({
   resave: true,
   saveUninitialized: true,
   secret: process.env.SESSION_SECRET,
@@ -81,11 +81,11 @@ app.use(session({
     autoReconnect: true,
     clear_interval: 3600
   })
-}));
+}));*/
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(flash());
-app.use((req, res, next) => {
+//app.use(flash());
+/*app.use((req, res, next) => {
   if (req.path === '/api/upload') {
     next();
   } else {
@@ -93,12 +93,12 @@ app.use((req, res, next) => {
   }
 });
 app.use(lusca.xframe('SAMEORIGIN'));
-app.use(lusca.xssProtection(true));
+app.use(lusca.xssProtection(true));*/
 app.use((req, res, next) => {
   res.locals.user = req.user;
   next();
 });
-app.use((req, res, next) => {
+/*app.use((req, res, next) => {
   // After successful login, redirect back to the intended page
   if (!req.user &&
       req.path !== '/login' &&
@@ -111,7 +111,7 @@ app.use((req, res, next) => {
     req.session.returnTo = req.path;
   }
   next();
-});
+});*/
 app.use(express.static(path.join(__dirname, 'public'), { maxAge: 31557600000 }));
 
 /**
