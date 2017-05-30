@@ -29,19 +29,19 @@ exports.postLogin = (req, res, next) => {
   const errors = req.validationErrors();
 
   if (errors) {
-    req.flash('errors', errors);
+    //req.flash('errors', errors);
     return res.redirect('/login');
   }
 
   passport.authenticate('local', (err, user, info) => {
     if (err) { return next(err); }
     if (!user) {
-      req.flash('errors', info);
+      //req.flash('errors', info);
       return res.redirect('/login');
     }
     req.logIn(user, (err) => {
       if (err) { return next(err); }
-      req.flash('success', { msg: 'Success! You are logged in.' });
+     // req.flash('success', { msg: 'Success! You are logged in.' });
       res.redirect(req.session.returnTo || '/');
     });
   })(req, res, next);
@@ -82,7 +82,7 @@ exports.postSignup = (req, res, next) => {
   const errors = req.validationErrors();
 
   if (errors) {
-    req.flash('errors', errors);
+    //req.flash('errors', errors);
     return res.redirect('/signup');
   }
 
@@ -94,7 +94,7 @@ exports.postSignup = (req, res, next) => {
   User.findOne({ email: req.body.email }, (err, existingUser) => {
     if (err) { return next(err); }
     if (existingUser) {
-      req.flash('errors', { msg: 'Account with that email address already exists.' });
+      //req.flash('errors', { msg: 'Account with that email address already exists.' });
       return res.redirect('/signup');
     }
     user.save((err) => {
@@ -130,7 +130,7 @@ exports.postUpdateProfile = (req, res, next) => {
   const errors = req.validationErrors();
 
   if (errors) {
-    req.flash('errors', errors);
+    //req.flash('errors', errors);
     return res.redirect('/account');
   }
 
@@ -144,12 +144,12 @@ exports.postUpdateProfile = (req, res, next) => {
     user.save((err) => {
       if (err) {
         if (err.code === 11000) {
-          req.flash('errors', { msg: 'The email address you have entered is already associated with an account.' });
+         // req.flash('errors', { msg: 'The email address you have entered is already associated with an account.' });
           return res.redirect('/account');
         }
         return next(err);
       }
-      req.flash('success', { msg: 'Profile information has been updated.' });
+      //req.flash('success', { msg: 'Profile information has been updated.' });
       res.redirect('/account');
     });
   });
@@ -166,7 +166,7 @@ exports.postUpdatePassword = (req, res, next) => {
   const errors = req.validationErrors();
 
   if (errors) {
-    req.flash('errors', errors);
+   // req.flash('errors', errors);
     return res.redirect('/account');
   }
 
@@ -175,7 +175,7 @@ exports.postUpdatePassword = (req, res, next) => {
     user.password = req.body.password;
     user.save((err) => {
       if (err) { return next(err); }
-      req.flash('success', { msg: 'Password has been changed.' });
+     // req.flash('success', { msg: 'Password has been changed.' });
       res.redirect('/account');
     });
   });
@@ -189,7 +189,7 @@ exports.postDeleteAccount = (req, res, next) => {
   User.remove({ _id: req.user.id }, (err) => {
     if (err) { return next(err); }
     req.logout();
-    req.flash('info', { msg: 'Your account has been deleted.' });
+   // req.flash('info', { msg: 'Your account has been deleted.' });
     res.redirect('/');
   });
 };
@@ -206,7 +206,7 @@ exports.getOauthUnlink = (req, res, next) => {
     user.tokens = user.tokens.filter(token => token.kind !== provider);
     user.save((err) => {
       if (err) { return next(err); }
-      req.flash('info', { msg: `${provider} account has been unlinked.` });
+      //req.flash('info', { msg: `${provider} account has been unlinked.` });
       res.redirect('/account');
     });
   });
@@ -226,7 +226,7 @@ exports.getReset = (req, res, next) => {
     .exec((err, user) => {
       if (err) { return next(err); }
       if (!user) {
-        req.flash('errors', { msg: 'Password reset token is invalid or has expired.' });
+        //req.flash('errors', { msg: 'Password reset token is invalid or has expired.' });
         return res.redirect('/forgot');
       }
       res.render('account/reset', {
@@ -246,7 +246,7 @@ exports.postReset = (req, res, next) => {
   const errors = req.validationErrors();
 
   if (errors) {
-    req.flash('errors', errors);
+    //req.flash('errors', errors);
     return res.redirect('back');
   }
 
@@ -256,7 +256,7 @@ exports.postReset = (req, res, next) => {
       .where('passwordResetExpires').gt(Date.now())
       .then((user) => {
         if (!user) {
-          req.flash('errors', { msg: 'Password reset token is invalid or has expired.' });
+         // req.flash('errors', { msg: 'Password reset token is invalid or has expired.' });
           return res.redirect('back');
         }
         user.password = req.body.password;
@@ -287,7 +287,7 @@ exports.postReset = (req, res, next) => {
     };
     return transporter.sendMail(mailOptions)
       .then(() => {
-        req.flash('success', { msg: 'Success! Your password has been changed.' });    
+        //req.flash('success', { msg: 'Success! Your password has been changed.' });    
       });
   };
 
@@ -321,7 +321,7 @@ exports.postForgot = (req, res, next) => {
   const errors = req.validationErrors();
 
   if (errors) {
-    req.flash('errors', errors);
+   // req.flash('errors', errors);
     return res.redirect('/forgot');
   }
 
@@ -334,7 +334,7 @@ exports.postForgot = (req, res, next) => {
       .findOne({ email: req.body.email })
       .then((user) => {
         if (!user) {
-          req.flash('errors', { msg: 'Account with that email address does not exist.' });
+         // req.flash('errors', { msg: 'Account with that email address does not exist.' });
         } else {
           user.passwordResetToken = token;
           user.passwordResetExpires = Date.now() + 3600000; // 1 hour
@@ -364,7 +364,7 @@ exports.postForgot = (req, res, next) => {
     };
     return transporter.sendMail(mailOptions)
       .then(() => {
-        req.flash('info', { msg: `An e-mail has been sent to ${user.email} with further instructions.` });
+        //req.flash('info', { msg: `An e-mail has been sent to ${user.email} with further instructions.` });
       });
   };
 
